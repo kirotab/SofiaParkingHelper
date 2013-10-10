@@ -18,11 +18,15 @@
         <script src="scripts/app/places.js"></script>
         <script src="scripts/app.js"></script>
     </head>
-    <body>
+    <body onload="startWatchingGeolocation(event)">
         <div id="home-view" data-id="home-view" data-role="view"
              data-layout="main-layout" data-title="Home">
             This is Sparta!
+            <img id="displayPosition" width="300" height="300" src="#" alt="Google Static Map" />
         </div>
+        
+        
+        
 
         <div data-role="layout" id="main-layout" data-id="main-layout">
             <header data-role="header">
@@ -46,5 +50,32 @@
                 <div>#: Description#</div>
             </div>
         </script>
+        
     </body>
+    <script>
+            function startWatchingGeolocation() {
+                navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
+                    enableHighAccuracy: true,
+                    maximumAge: 100
+                });
+            }
+
+            function geoWatchSuccess(position) {
+                var lat = position.coords.latitude;
+                var long = position.coords.longitude;
+                var heading = position.coords.heading;
+
+                var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
+                var centerPar = "center=" + lat + "," + long;
+                var sizePar = "size=300x300";
+
+                var displayPosition = document.getElementById("displayPosition");
+                displayPosition.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + "&" + "&sensor=true&zoom=13";
+                displayPosition.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
+            }
+
+            function geoWatchError(error) {
+                alert("error " + error)
+            }
+        </script>
 </html>
