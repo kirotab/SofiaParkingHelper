@@ -6,7 +6,6 @@
         <link href="kendo/styles/kendo.common.min.css" />
         <link href="kendo/styles/kendo.default.min.css" />
         <link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
-        <link href="styles/app.css" />
 
         <script src="cordova.js"></script>
         <script src="kendo/js/jquery.min.js"></script>
@@ -18,11 +17,49 @@
         <script src="scripts/app/places.js"></script>
         <script src="scripts/app.js"></script>
     </head>
+    
+    <style>
+        
+
+        #displayPosition {
+            top: 50%;
+            left: 50%;
+            display: block;
+            width:600px;
+            height:600px;
+            margin: -150px 0 0 -150px;
+            
+        }
+        #displayPositionWrapper {
+            margin:0 auto;
+            display: block;
+            height: 300px;
+            width: 300px;
+            display: block;
+            overflow:hidden;
+        }
+        
+        #arrow{
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: 100% 100% no-repeat; 
+            background-size: 20px 20px;
+            /*background-color: red;*/
+            background-image: url('styles/img/direction-arrow.png');
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+        }
+    </style>
+    
     <body onload="startWatchingGeolocation(event)">
         <div id="home-view" data-id="home-view" data-role="view"
              data-layout="main-layout" data-title="Home">
-            This is Sparta!
-            <img id="displayPosition" width="300" height="300" src="#" alt="Google Static Map" />
+            <div id="displayPositionWrapper">
+                <img id="displayPosition"  src="#" alt="Google Static Map" />
+                <div id="arrow"></div>
+            </div>
         </div>
         
         
@@ -38,7 +75,8 @@
                 <div data-role="tabstrip">
                     <a href="#home-view" data-icon="home">Home</a>
                     <a href="views/categories-view.html#categories-view" data-icon="bookmarks">Categories</a>
-                    <a href="views/places-view.html#places-view" data-icon="info">Places</a>
+                    <!--<a href="views/places-view.html#places-view" data-icon="info">Places</a>-->
+                    <a href="views/parking-view.html#parking-view" data-icon="info">Parking</a>
                 </div>
             </footer>
         </div>
@@ -51,12 +89,19 @@
             </div>
         </script>
         
+       <!-- <script id="parkingPoint-template" type="text/x-kendo-template">
+            <div>
+                <h2>#: Name #</h2>
+                <span>located at: (#:Latitude#,#:Longitude#)</span>
+            </div>
+        </script>-->
+        
     </body>
     <script>
             function startWatchingGeolocation() {
                 navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
                     enableHighAccuracy: true,
-                    maximumAge: 100
+                    maximumAge: 50
                 });
             }
 
@@ -67,11 +112,13 @@
 
                 var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
                 var centerPar = "center=" + lat + "," + long;
-                var sizePar = "size=300x300";
+                var sizePar = "size=600x600";
 
+                //var arrow = document.getElementById("arrow");
                 var displayPosition = document.getElementById("displayPosition");
-                displayPosition.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + "&" + "&sensor=true&zoom=13";
+                displayPosition.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + "&" + "&sensor=true&zoom=15";
                 displayPosition.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
+                //arrow.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
             }
 
             function geoWatchError(error) {

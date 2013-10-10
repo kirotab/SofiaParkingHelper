@@ -1,0 +1,15 @@
+<div data-role="view" id="parking-view" data-id="parking-view"
+     data-layout="main-layout" data-title="Parking"
+     data-show="app.parking.init">
+    <ul>
+        <li>
+            <a data-role="button" data-bind="events: {click: setParkingPoint}">Set Point</a>
+        </li>
+        <li>
+            <a data-role="button" data-bind="events: {click: getParkingPoint}">Get Point</a>
+        </li>
+    </ul>
+    <div id="category-info">
+        <h1 data-bind="text: parking" data-align="center"></h1>
+    </div>
+</div>
