@@ -1,3 +1,5 @@
+var baseAddressUrl = "http://maps.googleapis.com/maps/api/geocode/json?latlng=";
+
 window.httpRequest = (function(){
     function getJSON(url){
         var promise = new RSVP.Promise(function(resolve, reject){
@@ -18,7 +20,14 @@ window.httpRequest = (function(){
         return promise;
     }
     
+    function getAddress(lat,long){
+        var url = baseAddressUrl + lat+  "," +long + "&sensor=true";
+        var promise = getJSON(url);
+        return promise;
+    }
+    
     return {
-        getJSON:getJSON
+        getJSON:getJSON,
+        getAddress:getAddress
     };    
 }());

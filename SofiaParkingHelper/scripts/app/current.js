@@ -35,6 +35,8 @@ var app = app || {};
     
     var viewModel = kendo.observable({
         currentPoint:{"coords":{"latitude":0,"longitude":0}},
+        parkingPoint:{"coords":{"latitude":0,"longitude":0}},
+        parkingAddress:httpRequest.getAddress(0,0),
         test:"views/parking-view.html#parking-view",
         startWatchingGeolocation: startWatchingGeolocation
     });
