@@ -9,7 +9,8 @@
             <a data-role="button" data-bind="events: {click: getParkingPoint}">Get Point</a>
         </li>
     </ul>
-    <div id="category-info">
-        <h1 data-bind="text: parking" data-align="center"></h1>
+    <div id="parking-point">
+        <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
     </div>
+    
 </div>

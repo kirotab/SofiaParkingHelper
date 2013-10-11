@@ -15,6 +15,8 @@
         <script src="scripts/app/extensions.js"></script>
         <script src="scripts/app/categories.js"></script>
         <script src="scripts/app/places.js"></script>
+        <script src="scripts/app/parking.js"></script>
+        <script src="scripts/app/current.js"></script>
         <script src="scripts/app.js"></script>
     </head>
     
@@ -53,12 +55,16 @@
         }
     </style>
     
-    <body onload="startWatchingGeolocation(event)">
+    <body >
         <div id="home-view" data-id="home-view" data-role="view"
-             data-layout="main-layout" data-title="Home">
+             data-layout="main-layout" data-title="Home" data-show="app.current.init">
             <div id="displayPositionWrapper">
                 <img id="displayPosition"  src="#" alt="Google Static Map" />
                 <div id="arrow"></div>
+            </div>
+            
+            <div id="current-point">
+                <div data-bind="source: currentPoint"  data-template="currentPoint-template" data-align="center"></div>
             </div>
         </div>
         
@@ -76,7 +82,7 @@
                     <a href="#home-view" data-icon="home">Home</a>
                     <a href="views/categories-view.html#categories-view" data-icon="bookmarks">Categories</a>
                     <!--<a href="views/places-view.html#places-view" data-icon="info">Places</a>-->
-                    <a href="views/parking-view.html#parking-view" data-icon="info">Parking</a>
+                    <a  data-bind="attr: { href:  test}"  data-icon="info">Parking</a>
                 </div>
             </footer>
         </div>
@@ -89,15 +95,20 @@
             </div>
         </script>
         
-       <!-- <script id="parkingPoint-template" type="text/x-kendo-template">
+        <script id="parkingPoint-template" type="text/x-kendo-template">
             <div>
-                <h2>#: Name #</h2>
-                <span>located at: (#:Latitude#,#:Longitude#)</span>
+                <span>located at: (#:coords.latitude#,#:coords.longitude#)</span>
             </div>
-        </script>-->
+        </script>
+
+        <script id="currentPoint-template" type="text/x-kendo-template">
+            <div>
+                <span>located at: (#:coords.latitude#,#:coords.longitude#)</span>
+            </div>
+        </script>
         
     </body>
-    <script>
+    <!--<script>
             function startWatchingGeolocation() {
                 navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
                     enableHighAccuracy: true,
@@ -124,5 +135,5 @@
             function geoWatchError(error) {
                 alert("error " + error)
             }
-        </script>
+        </script>-->
 </html>
