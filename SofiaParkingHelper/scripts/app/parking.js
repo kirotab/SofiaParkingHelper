@@ -1,8 +1,47 @@
 var app = app || {};
+var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
 
 (function(a) {
-   
     
+    function takePicture() {
+    navigator.camera.getPicture(function (imageBase64) {
+                //console.log(imageBase64);
+                //document.getElementById("parking-image").src = "data:image/jpeg;base64," + imageBase64;
+                localStorage.setItem("savedParkingPic", imageBase64);
+                viewModel.set("savedPicture", "data:image/jpeg;base64," + imageBase64);
+        
+            }, function (error) {
+              alert('Failed because: ' + message);
+            }, {
+                
+                quality: 50,
+                destinationType: 0,
+                sourceType : Camera.PictureSourceType.CAMERA,
+                allowEdit : false,
+                encodingType: Camera.EncodingType.JPEG,
+                targetWidth: 200,
+                targetHeight: 200,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: false
+            });
+        }
+    
+    function loadPicFromStorage(){
+        if (localStorage.getItem("savedParkingPic") != undefined) {
+		    var storedPic = localStorage.getItem("savedParkingPic");
+            if(storedPic != "#"){
+                viewModel.set("savedPicture", "data:image/jpeg;base64,"+ storedPic);
+            }
+            else{
+                viewModel.set("savedPicture", defaultImgUrl);
+            }
+        }
+    }
+    
+    function removeSavedPicture(){
+        localStorage.setItem("savedParkingPic","#");
+        viewModel.set("savedPicture", defaultImgUrl);    
+    }
     function removeParkingPoint(){
         if (hasParked()){
                 showConfirm();
@@ -18,6 +57,8 @@ var app = app || {};
                 //location.reload(false);
                 viewModel.set("hasParkedValue", hasParked());
                 viewModel.set("hasParkedValueReverse", !hasParked());
+                setAddress(newPoint.coords.latitude, newPoint.coords.longitude);
+                removeSavedPicture();
         }
         else {
             
@@ -62,6 +103,7 @@ var app = app || {};
             localStorage.setItem("savedParkingPoint", JSON.stringify(location));
             viewModel.set("hasParkedValue", hasParked());
             viewModel.set("hasParkedValueReverse", !hasParked());
+            removeSavedPicture();
             //return location;   
         });
         /*.then(function(point) {
@@ -87,7 +129,12 @@ var app = app || {};
         removeParkingPoint: removeParkingPoint,
         hasParked: hasParked,
         hasParkedValue: true,
-        hasParkedValueReverse: true
+        hasParkedValueReverse: true,
+        isMainPage: false,
+        takePicture:takePicture,
+        savedPicture:defaultImgUrl,
+        removeSavedPicture:removeSavedPicture
+        
     });
     
     function init(e) {
@@ -95,28 +142,37 @@ var app = app || {};
         //console.log(e.view);
         //viewModel.set("parkingPoint", {"coords":{"latitude": e.view.params.lat, "longitude": e.view.params.lat}});
         var parkingPointParameter = e.view.params.ppoint;
-        if (parkingPointParameter){
+        if (parkingPointParameter ){
             viewModel.set("parkingPoint", JSON.parse(parkingPointParameter));
             localStorage.setItem("savedParkingPoint", parkingPointParameter);
-            console.log("aaa");
+            
+            loadPicFromStorage();
+            
+            //console.log("aaa");
         }
-        else {            
+        else {
+            
             
             if (localStorage.getItem("savedParkingPoint") != undefined) {
 			    var storedPoint = localStorage.getItem("savedParkingPoint");
                 viewModel.set("parkingPoint", JSON.parse(storedPoint));
-                console.log("bbb");
+                //console.log("bbb");
+                
+                loadPicFromStorage();
             }
             else {
                 viewModel.set("parkingPoint", {"coords":{"latitude":0,"longitude":0}});
-                console.log("ccc");
+                removeSavedPicture();
+                //console.log("ccc");
             }
-            if(!hasParked()){
-                console.log("ddd");
+                
+            //viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ JSON.stringify(getParkingPoint));
             
-                setParkingPoint();
-                //viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ JSON.stringify(getParkingPoint));
-            }
+        }
+        if(!hasParked()){
+            //console.log("ddd");
+            
+            setParkingPoint();
         }
         viewModel.set("hasParkedValue", hasParked());
         viewModel.set("hasParkedValueReverse", !hasParked());

@@ -36,28 +36,31 @@ var app = app || {};
                 //location.reload(false);
                 viewModel.set("hasParkedValue", hasParked());
                 viewModel.set("hasParkedValueReverse", !hasParked());
+                viewModel.set("test","views/parking-view.html#parking-view");
         }
         else {
             
         }
     }
     
-    function onConfirmExit() {
-        console.log("in exit app func confirm");
-        if (navigator.app) {
-            navigator.app.exitApp();
-        }
-        else if (navigator.device) {
-            navigator.device.exitApp();
+    function onConfirmExit(buttonIndex) {
+        if (buttonIndex == 1){
+            console.log("in exit app func confirm");
+            if (navigator.app) {
+                navigator.app.exitApp();
+            }
+            else if (navigator.device) {
+                navigator.device.exitApp();
+            }
         }
     }
 
     function showConfirmExit() {
         navigator.notification.confirm(
             'Are you sure ?',    // message
-             onConfirm,          // callback to invoke with index of button pressed
+             onConfirmExit,          // callback to invoke with index of button pressed
             'Exit',            // title
-            'Yes,No'             // buttonLabels
+            ['Yes','No']             // buttonLabels
         );
     }
     
@@ -66,7 +69,7 @@ var app = app || {};
             'Are you sure ?',    // message
              onConfirm,          // callback to invoke with index of button pressed
             'Unpark',            // title
-            'Yes,No'             // buttonLabels
+            ['Yes','No']             // buttonLabels
         );
     }
     
@@ -111,20 +114,22 @@ var app = app || {};
         var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
         var centerPar = "center=" + lat + "," + long;
         var sizePar = "size=600x600";
-
+        var markersPar = "&markers=color%3ablue|label%3aP|" + viewModel.currentPoint.coords.latitude + "," + viewModel.currentPoint.coords.longitude + ",|" + viewModel.currentPoint.coords.latitude + "," + viewModel.currentPoint.coords.longitude;
+        
+        
         //var arrow = document.getElementById("arrow");
         var map = document.getElementById("map-canvas");
-        map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + "&" + "&sensor=true&zoom=15";
+        map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + markersPar + "&sensor=true&zoom=15";
         
         map.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
        
-        
+        location.reload(ture);
    
         //arrow.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
         viewModel.set("currentPoint", position);
-        if(!viewModel.parkingPoint || (viewModel.parkingPoint.coords.latitude == 0 && viewModel.parkingPoint.coords.longitude == 0)){
+        /*if(!viewModel.parkingPoint || (viewModel.parkingPoint.coords.latitude == 0 && viewModel.parkingPoint.coords.longitude == 0)){
                 viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ JSON.stringify(position));
-        }
+        }*/
         httpRequest.getAddress(position.coords.latitude, position.coords.longitude).then(function(a){
                 //console.log(a);
                 viewModel.set("currentAddress",a)
@@ -141,7 +146,7 @@ var app = app || {};
     }
     
     function onOptionChanged(e) {
-        console.log(e.sender._selectedValue + "asd");
+        console.log(e.sender._selectedValue);
           
         viewModel.set("selectedOption", e.sender._selectedValue);
     }
@@ -160,7 +165,8 @@ var app = app || {};
         options:[{"Name":"Blue Zone","Value":"0"},{"Name":"Exit","Value":"1"}],
         selectedOption:"",
         change:onOptionChanged,
-        handleOptionsButton: handleOptionsButton
+        handleOptionsButton: handleOptionsButton,
+        isMainPage: true
     });
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
     function init(e) {

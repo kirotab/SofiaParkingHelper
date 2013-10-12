@@ -48,6 +48,14 @@
             margin: -10px 0 0 -10px;
         }
         
+        /*#parking-image{
+            width: 200px;
+            height: 200px;
+            background: 100% 100% no-repeat; 
+            background-size: 200px 200px;
+            background-image: url('styles/img/default-picture.png');
+        }
+        */
         
         #options-list{
            
@@ -75,7 +83,6 @@
                 <span>ParkingInfo</span>    
                 <span data-bind="text: parkingAddress"  data-align="center"></span>
             </div>
-            
         </div>
         
         
@@ -101,8 +108,9 @@
                     <a data-bind="attr: { href: test},visible: hasParkedValueReverse,events: {click: setParkingPoint}" data-icon="contacts">Park here</a>
                     <a data-role="button" data-bind="events: {click: removeParkingPoint}, visible: hasParkedValue" data-icon="reply">Unpark </a>
                     
-                    <a data-bind="events: {click: handleOptionsButton}" data-icon="settings">Options</a>
-                    <div style="
+                    <a data-bind="events: {click: handleOptionsButton}, visible: isMainPage" data-icon="settings">Options</a>
+                    <div data-bind=" visible: isMainPage" 
+                        style="
                         position:realtive;
                         padding:0;
                         display:inline-block;
