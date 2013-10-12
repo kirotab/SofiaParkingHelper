@@ -2,17 +2,15 @@ var app = app || {};
 
 (function(a) {
    
-    function handleOptionsButton(){
+    function handleOptionsButton(e){
+        console.log(e);
         console.log("handle button options func");
-        if(selectedOption == 1){
-            
-            
+        if(viewModel.selectedOption == 1){
             exitApp();
         }
-        else if(selectedOption == 0){
+        else if(viewModel.selectedOption == 0){
             toggleBlueZone();
         }
-        
     }
     function toggleBlueZone(){
         console.log("blue zone func");
@@ -126,12 +124,12 @@ var app = app || {};
         alert("error " + error)
     }
     
-    function onOptionChanged(e) {             
-        console.log(e.sender._selectedValue);
+    function onOptionChanged(e) {
+        console.log(e.sender._selectedValue + "asd");
+          
         viewModel.set("selectedOption", e.sender._selectedValue);
-            
     }
-    
+        
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
     var viewModel = kendo.observable({
         currentPoint:{"coords":{"latitude":0,"longitude":0}},
@@ -143,8 +141,8 @@ var app = app || {};
         hasParked: hasParked,
         hasParkedValue: true,
         hasParkedValueReverse: true,
-        options:[],
-        selectedOption:null,
+        options:[{"Name":"Blue Zone","Value":"0"},{"Name":"Exit","Value":"1"}],
+        selectedOption:"",
         change:onOptionChanged,
         handleOptionsButton: handleOptionsButton
     });
@@ -161,7 +159,7 @@ var app = app || {};
             viewModel.set("hasParkedValue", hasParked());
             viewModel.set("hasParkedValueReverse", !hasParked());
 
-        viewModel.set("options",[{"Name":"Blue Zone","Value":"0"},{"Name":"Exit","Value":"1"}]);
+        //viewModel.set("options",);
         startWatchingGeolocation();
         
         kendo.bind(e.view.element, viewModel);

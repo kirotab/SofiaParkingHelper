@@ -50,8 +50,7 @@
         
         
         #options-list{
-            display:block;
-            padding:50;
+           
             
         }
     </style>
@@ -101,18 +100,26 @@
                     <a data-bind="attr: { href: test},visible: hasParkedValue" data-icon="about">Parking Info</a>
                     <a data-bind="attr: { href: test},visible: hasParkedValueReverse,events: {click: setParkingPoint}" data-icon="contacts">Park here</a>
                     <a data-role="button" data-bind="events: {click: removeParkingPoint}, visible: hasParkedValue" data-icon="reply">Unpark </a>
-                    <!--<a data-icon="settings">-->
-                    <a data-icon="settings" data-bind="events: {click: handleOptionsButton}">
+                    
+                    <a data-bind="events: {click: handleOptionsButton}" data-icon="settings">Options</a>
+                    <div style="
+                        position:realtive;
+                        padding:0;
+                        display:inline-block;
+                        max-width:40px;
+                        width:40px;
+                        height:100%;
+                        word-wrap:break-word;">
                         <select id="options-list" data-role="dropdownlist"
                             data-bind="source: options, events: { change: change}"
                             data-text-field="Name"
                             data-value-field="Value"
-                            
+                            data-template="options-template"
                             >
-                            <!--data-template="options-template"-->
                             
                         </select>
-                    </a>
+                    </div>
+                    
                         <!--</a>-->
                     <!--<a data-bind="options" data-icon="settings" data-template="options-template">Options</a>-->
                     <!--a href="views/options-view.html#options-view"-->
