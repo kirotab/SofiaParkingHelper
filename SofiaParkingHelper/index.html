@@ -13,15 +13,13 @@
         <script src="scripts/libs/rsvp.min.js"></script>
         <script src="scripts/app/http-request.js"></script>
         <script src="scripts/app/extensions.js"></script>
-        <script src="scripts/app/categories.js"></script>
-        <script src="scripts/app/places.js"></script>
         <script src="scripts/app/parking.js"></script>
         <script src="scripts/app/current.js"></script>
         <script src="scripts/app.js"></script>
     </head>
     
     <style>
-        #displayPosition {
+        #map-canvas {
             top: 50%;
             left: 50%;
             display: block;
@@ -49,51 +47,88 @@
             left: 50%;
             margin: -10px 0 0 -10px;
         }
+        
+        
+        #options-list{
+            display:block;
+            padding:50;
+            
+        }
     </style>
+        
+    <!--<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
     
     <body >
         <div id="home-view" data-id="home-view" data-role="view"
              data-layout="main-layout" data-title="Home" data-show="app.current.init">
             <div id="displayPositionWrapper">
-                <img id="displayPosition"  src="#" alt="Google Static Map" />
+                <img id="map-canvas" src="#" alt="map canvas"  />
                 <div id="arrow"></div>
             </div>
             
             <div id="current-point">
                 <div data-bind="source: currentPoint"  data-template="currentPoint-template" data-align="center"></div>
+                <span>CurrentInfo</span>    
+                <span data-bind="text: currentAddress"  data-align="center"></span>
             </div>
             <div id="parking-point">
                 <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
+                <span>ParkingInfo</span>    
+                <span data-bind="text: parkingAddress"  data-align="center"></span>
             </div>
             
         </div>
         
         
-        
+         <!--LAYOUT-->
 
         <div data-role="layout" id="main-layout" data-id="main-layout">
+            
+            <!--HEADER-->
+            
             <header data-role="header">
                 <div data-role="navbar">
                     <span data-role="view-title"></span>
                 </div>
             </header>
+            
+            <!--FOOTER-->
+            
             <footer data-role="footer">
                 <div data-role="tabstrip">
-                    <a href="#home-view" data-icon="home">Home</a>
-                    <a href="views/categories-view.html#categories-view" data-icon="bookmarks">Categories</a>
+                    <a href="#home-view" data-icon="globe">Home</a>
+                    
+                    <a data-bind="attr: { href: test},visible: hasParkedValue" data-icon="about">Parking Info</a>
+                    <a data-bind="attr: { href: test},visible: hasParkedValueReverse,events: {click: setParkingPoint}" data-icon="contacts">Park here</a>
+                    <a data-role="button" data-bind="events: {click: removeParkingPoint}, visible: hasParkedValue" data-icon="reply">Unpark </a>
+                    <!--<a data-icon="settings">-->
+                    <a data-icon="settings" data-bind="events: {click: handleOptionsButton}">
+                        <select id="options-list" data-role="dropdownlist"
+                            data-bind="source: options, events: { change: change}"
+                            data-text-field="Name"
+                            data-value-field="Value"
+                            
+                            >
+                            <!--data-template="options-template"-->
+                            
+                        </select>
+                    </a>
+                        <!--</a>-->
+                    <!--<a data-bind="options" data-icon="settings" data-template="options-template">Options</a>-->
+                    <!--a href="views/options-view.html#options-view"-->
+                    
+                    <!--<a data-bind="attr: { href: test}"  data-icon="info">Parking Info</a>-->
+                    
+                    
+                    <!--<a href="views/categories-view.html#categories-view" data-icon="settings">Categories</a>-->
+                    
                     <!--<a href="views/places-view.html#places-view" data-icon="info">Places</a>-->
-                    <a  data-bind="attr: { href: test}"  data-icon="info">Parking Info</a>
                 </div>
             </footer>
         </div>
 
-        <script id="place-template" type="text/x-kendo-template">
-            <div>
-                <h2>#: Name #</h2>
-                <span>located at: (#:Latitude#,#:Longitude#)</span>
-                <div>#: Description#</div>
-            </div>
-        </script>
+        
+        <!--TEMPLATES-->
         
         <script id="parkingPoint-template" type="text/x-kendo-template">
             <div>
@@ -107,33 +142,10 @@
             </div>
         </script>
         
+        <script id="options-template" type="text/x-kendo-template">
+            
+            <div>#:Name#</div>
+        </script>
+        
     </body>
-    <!--<script>
-            function startWatchingGeolocation() {
-                navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
-                    enableHighAccuracy: true,
-                    maximumAge: 50
-                });
-            }
-
-            function geoWatchSuccess(position) {
-                var lat = position.coords.latitude;
-                var long = position.coords.longitude;
-                var heading = position.coords.heading;
-
-                var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
-                var centerPar = "center=" + lat + "," + long;
-                var sizePar = "size=600x600";
-
-                //var arrow = document.getElementById("arrow");
-                var displayPosition = document.getElementById("displayPosition");
-                displayPosition.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + "&" + "&sensor=true&zoom=15";
-                displayPosition.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
-                //arrow.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
-            }
-
-            function geoWatchError(error) {
-                alert("error " + error)
-            }
-        </script>-->
 </html>

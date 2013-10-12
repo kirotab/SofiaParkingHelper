@@ -1,6 +1,13 @@
 <div data-role="view" id="parking-view" data-id="parking-view"
      data-layout="main-layout" data-title="Parking"
      data-show="app.parking.init">
+    <div>
+        <img src="#" heigh="200px" width="200px"/>
+        <div id="parking-point">
+            <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
+            <span data-bind="text: parkingAddress"  data-align="center"></span>
+        </div>
+    </div>
     <ul>
         <li>
             <a data-role="button" data-bind="events: {click: setParkingPoint}">Set Point</a>
@@ -8,9 +15,10 @@
         <li>
             <a data-role="button" data-bind="events: {click: getParkingPoint}">Get Point</a>
         </li>
+        <li>
+            <a data-role="button" data-bind="events: {click: removeParkingPoint}">Remove Point</a>
+        </li>
     </ul>
-    <div id="parking-point">
-        <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
-    </div>
+    
     
 </div>

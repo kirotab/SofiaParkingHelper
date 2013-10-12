@@ -22,8 +22,18 @@ window.httpRequest = (function(){
     
     function getAddress(lat,long){
         var url = baseAddressUrl + lat+  "," +long + "&sensor=true";
-        var promise = getJSON(url);
-        return promise;
+        var result = getJSON(url).then(function(results) {
+            //console.log(results.results[0].formatted_address);
+            if(results.results && results.results.length > 0){
+                //console.log(results.results[0].formatted_address);
+                return results.results[0].formatted_address;
+            }
+            
+            return "unknown address";
+            })
+        //console.log(result);
+        
+        return result;
     }
     
     return {
