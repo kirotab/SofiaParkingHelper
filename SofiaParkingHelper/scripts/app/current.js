@@ -17,14 +17,13 @@ var app = app || {};
     }
     
     function exitApp(){
-        console.log("exit app func");
-        
-        navigator.app.exitApp();
+        console.log("in exit app func");
+        showConfirmExit();
     }
     
     function removeParkingPoint(){
         if (hasParked()){
-                showConfirm();
+            showConfirm();
 		}
     }
     
@@ -42,9 +41,26 @@ var app = app || {};
             
         }
     }
+    
+    function onConfirmExit() {
+        console.log("in exit app func confirm");
+        if (navigator.app) {
+            navigator.app.exitApp();
+        }
+        else if (navigator.device) {
+            navigator.device.exitApp();
+        }
+    }
 
-    // Show a custom confirmation dialog
-    //
+    function showConfirmExit() {
+        navigator.notification.confirm(
+            'Are you sure ?',    // message
+             onConfirm,          // callback to invoke with index of button pressed
+            'Exit',            // title
+            'Yes,No'             // buttonLabels
+        );
+    }
+    
     function showConfirm() {
         navigator.notification.confirm(
             'Are you sure ?',    // message
