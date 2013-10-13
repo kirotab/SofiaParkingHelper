@@ -51,15 +51,16 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         
         //var arrow = document.getElementById("arrow");
         var map = document.getElementById("map-canvas");
-        //map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + pathPar+ pathParAreaGreenEncoded + markersPar +"&sensor=false&zoom=14";
+        //map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + pathPar+ pathParAreaBlue + markersPar +"&sensor=false&zoom=14";
         //map.src = mapsBaseUrl + "?" + sizePar + pathParAreaGreenEncoded +"&sensor=false";
-        map.src = "http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false";
-        
-        
+        //map.src = "http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false";
+        //console.log(map.src);
+        /*map.src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false";
+        */
         map.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
         //var markersPar = "markers=color%3ablue|label%3aP|" + lat + "," + long + "|" + viewModel.parkingPoint.coords.latitude + "," + viewModel.parkingPoint.coords.longitude;
        
-   
+       
         //arrow.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
         viewModel.set("currentPoint", position);
         /*if(!viewModel.parkingPoint || (viewModel.parkingPoint.coords.latitude == 0 && viewModel.parkingPoint.coords.longitude == 0)){
