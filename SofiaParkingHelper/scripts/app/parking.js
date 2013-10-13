@@ -3,6 +3,41 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
 
 (function(a) {
     
+    function setZone(zoneName, zoneProp){
+        
+        if (cordovaExt.isWithinPoly(zoneProp,blueZonePolygon)){
+                viewModel.set(zoneName,"Blue");
+            }
+        else if (cordovaExt.isWithinPoly(zoneProp,greenZonePolygon)){
+                viewModel.set(zoneName,"Green");
+            }
+        else {
+            //console.log("Zone None");
+            viewModel.set(zoneName,"None");
+        }
+    }
+    function getColorFromZone(zoneName){
+        if (zoneName == "Blue"){
+            //console.log("color Blue");
+            //console.log(zoneName);
+            
+            return "blue";
+        }
+        else if (zoneName == "Green"){
+            //console.log("color Green");
+            //console.log(zoneName);
+            return "green";
+        }
+        else {
+            //console.log("color Red");
+            //console.log(zoneName);
+            
+            return "red";
+        }
+    }
+    
+    
+    
     function takePicture() {
     navigator.camera.getPicture(function (imageBase64) {
                 //console.log(imageBase64);
@@ -59,7 +94,8 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
                 viewModel.set("hasParkedValueReverse", !hasParked());
                 setAddress(newPoint.coords.latitude, newPoint.coords.longitude);
                 removeSavedPicture();
-        }
+                setZone("parkingZone",viewModel.parkingPoint);
+            }
         else {
             
         }
@@ -104,6 +140,7 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
             viewModel.set("hasParkedValue", hasParked());
             viewModel.set("hasParkedValueReverse", !hasParked());
             removeSavedPicture();
+            setZone("parkingZone",viewModel.parkingPoint);
             //return location;   
         });
         /*.then(function(point) {
@@ -133,7 +170,8 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
         isMainPage: false,
         takePicture:takePicture,
         savedPicture:defaultImgUrl,
-        removeSavedPicture:removeSavedPicture
+        removeSavedPicture:removeSavedPicture,
+        parkingZone: ""
         
     });
     
@@ -177,6 +215,7 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
         viewModel.set("hasParkedValue", hasParked());
         viewModel.set("hasParkedValueReverse", !hasParked());
         setAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude);
+        setZone("parkingZone",viewModel.parkingPoint);
         kendo.bind(e.view.element, viewModel);
     }   
     

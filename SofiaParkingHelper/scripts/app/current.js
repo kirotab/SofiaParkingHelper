@@ -10,21 +10,25 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     
     //console.log(blueZoneArray);
 //rightShoulderFront.setMap(map);
-    function handleZoomIn(ev){
+    function handleZoomIn(){
+       console.log("entered hande zoom in");
+        
         var zoomLvl = viewModel.currentZoomLevel;
         if(zoomLvl < 16){
-            zoomLvl++;
-            viewModel.set("currentZoomLevel",zoomLvl);
+            viewModel.set("currentZoomLevel",zoomLvl+1);
         }
-       //console.log(viewModel.currentZoomLevel)
+       console.log(viewModel.currentZoomLevel);
+        return;
     }
-    function handleZoomOut(ev){
+    function handleZoomOut(){
+       console.log("entered hande zoom in");
+        
         var zoomLvl = viewModel.currentZoomLevel;
         if(zoomLvl > 1){
-            zoomLvl--;
-            viewModel.set("currentZoomLevel",zoomLvl);
+            viewModel.set("currentZoomLevel",zoomLvl-1);
         }
-        //console.log(viewModel.currentZoomLevel);
+        console.log(viewModel.currentZoomLevel);
+        return;
     }
    
     
@@ -72,11 +76,13 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     function stopWatchingGeolocation() {
         console.log("in stop watch"+watchID);
         navigator.geolocation.clearWatch(watchID);
+        watchID = null;
     }
     
     function startWatchingGeolocation() {
         console.log("before start" + watchID);
-        if (watchID == undefined || !watchID){
+        if(!watchID){
+            console.log("in watch stop");
             watchID = navigator.geolocation.watchPosition(
             geoWatchSuccess, geoWatchError, {enableHighAccuracy: true,maximumAge: 500}
             );
@@ -197,19 +203,19 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         }
     }
     function toggleBlueZone(){
-        console.log("blue zone func");
+        //console.log("blue zone func");
         //cordovaExt.isWithinPoly(viewModel.currentPoint,blueZonePolygon);
         var show = viewModel.showBlueZone;
         viewModel.set("showBlueZone",!show);
     }
     function toggleGreenZone(){
-        console.log("green zone func");
+        //console.log("green zone func");
         //cordovaExt.isWithinPoly(viewModel.currentPoint,greenZonePolygon);
         var show = viewModel.showGreenZone;
         viewModel.set("showGreenZone",!show);
     }
     function exitApp(){
-        console.log("in exit app func");
+        //console.log("in exit app func");
         showConfirmExit();
     }
     
@@ -229,11 +235,11 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
                 viewModel.set("hasParkedValue", hasParked());
                 viewModel.set("hasParkedValueReverse", !hasParked());
                 viewModel.set("test","views/parking-view.html#parking-view");
-            httpRequest.getAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude).then(function(a){
-                //console.log(a);
-                viewModel.set("parkingAddress",a)
-                setZone("parkingZone",viewModel.parkingPoint);
-            });
+                httpRequest.getAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude).then(function(a){
+                    //console.log(a);
+                    viewModel.set("parkingAddress",a)
+                    setZone("parkingZone",viewModel.parkingPoint);
+                });
         }
         else {
             
@@ -282,9 +288,8 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     
     
     function onOptionChanged(e) {
-        console.log(e.sender._selectedValue);
-          
-        viewModel.set("selectedOption", e.sender._selectedValWatch);
+        //console.log(e.sender._selectedValue);
+        viewModel.set("selectedOption", e.sender._selectedValue);
     }
         
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //

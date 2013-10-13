@@ -2,30 +2,38 @@
      data-layout="main-layout" data-title="Parking"
      data-show="app.parking.init">
     <div>
-        <img id="parking-image" heigh="200px" width="200px" 
+        <img id="parking-image" heigh="250px" width="250px" 
         data-bind="events: {click: takePicture},attr: { src: savedPicture}" 
         style="margin:0 auto;
         display:block;"/>
-        <div id="parking-point">
+        
+        <div id="parking-point" data-bind="attr: { class: parkingZone}">
+            <span>Parking Point: </span>
+            <div class="ZoneInfo">
+                <span>Parking Zone: </span>
+                <span data-bind="text: parkingZone"  data-align="center"></span>
+            </div>
+            <div>
+                <span>Address: </span>
+                <span data-bind="text: parkingAddress"  data-align="center"></span>
+            </div>
             <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
-            <span data-bind="text: parkingAddress"  data-align="center"></span>
         </div>
     </div>
-    <ul>
-        <li>
+    <div class="buttonRow">
+        <div>
             <a data-role="button" data-bind="events: {click: setParkingPoint}">Set Point</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a data-role="button" data-bind="events: {click: getParkingPoint}">Get Point</a>
-        </li>
-        <li>
+        </div>
+    </div>
+    <div class="buttonRow">
+        <div>
             <a data-role="button" data-bind="events: {click: removeParkingPoint}">Remove Point</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a data-role="button" data-bind="events: {click: removeSavedPicture}">Remove Picture</a>
-        </li>
-        
-    </ul>
-    
-    
+        </div>
+    </div> 
 </div>

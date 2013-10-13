@@ -14,7 +14,7 @@ var cordovaExt = (function() {
     function isWithinPoly(lookupPos, polygon){
         var lookupPosAsLatLng = new google.maps.LatLng(lookupPos.coords.latitude,lookupPos.coords.longitude);
         var isWithinPolygon = google.maps.geometry.poly.containsLocation(lookupPosAsLatLng, polygon);
-        console.log(isWithinPolygon);
+        //console.log(isWithinPolygon);
         return isWithinPolygon;
 }
     
