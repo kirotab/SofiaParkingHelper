@@ -2,7 +2,7 @@ var app = app || {};
 var blueZonePolygon = blueZonePolygon || new google.maps.Polygon({ paths: blueZoneArray });
 var greenZonePolygon = greenZonePolygon || new google.maps.Polygon({ paths: greenZoneArray });
 var defaultZoomLevel = 13;
-var watchID = watchID || {};
+var watchID;
 
 var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
 (function(a) {
@@ -16,7 +16,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
             zoomLvl++;
             viewModel.set("currentZoomLevel",zoomLvl);
         }
-        console.log(viewModel.currentZoomLevel)
+       //console.log(viewModel.currentZoomLevel)
     }
     function handleZoomOut(ev){
         var zoomLvl = viewModel.currentZoomLevel;
@@ -24,8 +24,9 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
             zoomLvl--;
             viewModel.set("currentZoomLevel",zoomLvl);
         }
-        console.log(viewModel.currentZoomLevel);
+        //console.log(viewModel.currentZoomLevel);
     }
+   
     
     function handleCenterCurrentPoint(ev){
         viewModel.isCentered = true;
@@ -45,38 +46,42 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
                 viewModel.set(zoneName,"Green");
             }
         else {
-            console.log("Zone None");
+            //console.log("Zone None");
             viewModel.set(zoneName,"None");
         }
     }
     function getColorFromZone(zoneName){
         if (zoneName == "Blue"){
-            console.log("color Blue");
-            console.log(zoneName);
+            //console.log("color Blue");
+            //console.log(zoneName);
             
             return "blue";
         }
         else if (zoneName == "Green"){
-            console.log("color Green");
-            console.log(zoneName);
+            //console.log("color Green");
+            //console.log(zoneName);
             return "green";
         }
         else {
-            console.log("color Red");
-            console.log(zoneName);
+            //console.log("color Red");
+            //console.log(zoneName);
             
             return "red";
         }
     }
     function stopWatchingGeolocation() {
+        console.log(watchID);
         navigator.geolocation.clearWatch(watchID);
     }
     
     function startWatchingGeolocation() {
-            watchID = navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
-            enableHighAccuracy: true,
-            maximumAge: 500
-        });
+        console.log("before start" + watchID);
+        if (watchID == undefined || !watchID){
+            watchID = navigator.geolocation.watchPosition(
+            geoWatchSuccess, geoWatchError, {enableHighAccuracy: true,maximumAge: 500}
+            );
+        }
+        console.log("after start" + watchID);
     }
     
     function geoWatchSuccess(position) {
@@ -165,8 +170,8 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     }
     
     function handleOptionsButton(e){
-        console.log(e);
-        console.log("handle button options func");
+        //console.log(e);
+        //console.log("handle button options func");
         if(viewModel.selectedOption == 10){
             exitApp();
         }
@@ -178,19 +183,27 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         else if(viewModel.selectedOption == 1){
             toggleGreenZone();
         }
+        //Stop Geolocation Watch
         else if (viewModel.selectedOption == 9){
             stopWatchingGeolocation();
         }
+        //Start Geolocation Watch
+        else if (viewModel.selectedOption == 8){
+            startWatchingGeolocation();
+        }
     }
     function toggleBlueZone(){
-        console.log("blue zone func");
-        cordovaExt.isWithinPoly(viewModel.currentPoint,blueZonePolygon)
+        //console.log("blue zone func");
+        //cordovaExt.isWithinPoly(viewModel.currentPoint,blueZonePolygon);
+        var show = viewModel.showBlueZone;
+        viewModel.set("showGreenZone",!show);
     }
     function toggleGreenZone(){
-        console.log("green zone func");
-        cordovaExt.isWithinPoly(viewModel.currentPoint,greenZonePolygon)
+        //console.log("green zone func");
+        //cordovaExt.isWithinPoly(viewModel.currentPoint,greenZonePolygon);
+        var show = viewModel.showGreenZone;
+        viewModel.set("showGreenZone",!show);
     }
-    
     function exitApp(){
         console.log("in exit app func");
         showConfirmExit();
@@ -283,8 +296,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     function onOptionChanged(e) {
         console.log(e.sender._selectedValue);
           
-        viewModel.set("selectedOption", e.sender._selectedValue);
-    }
+        viewModel.set("selectedOption", e.sender._selectedValWatch    }
         
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
     var viewModel = kendo.observable({
@@ -300,7 +312,8 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         options:[
         {"Name":"Blue Zone","Value":"0"},
         {"Name":"Green Zone","Value":"1"},
-        {"Name":"Stop GeoWatch","Value":"9"},
+        {"Name":"Start Watch","Value":"8"},
+        {"Name":"Stop Watch","Value":"9"},
         {"Name":"Exit","Value":"10"}],
         selectedOption:"",
         change:onOptionChanged,
@@ -313,7 +326,9 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         handleCenterParkingPoint: handleCenterParkingPoint,
         currentZoomLevel: defaultZoomLevel,
         handleZoomIn:handleZoomIn,
-        handleZoomOut:handleZoomOut
+        handleZoomOut:handleZoomOut,
+        showGreenZone:true,
+        showBlueZone:true
         
     });
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
