@@ -11,7 +11,15 @@ var cordovaExt = (function() {
         return promise;
     }
     
+    function isWithinPoly(lookupPos, polygon){
+        var lookupPosAsLatLng = new google.maps.LatLng(lookupPos.coords.latitude,lookupPos.coords.longitude);
+        var isWithinPolygon = google.maps.geometry.poly.containsLocation(lookupPosAsLatLng, polygon);
+        console.log(isWithinPolygon);
+        return isWithinPolygon;
+}
+    
     return {
-        getLocation: getLocation
+        getLocation: getLocation,
+        isWithinPoly:isWithinPoly
     }
 }());

@@ -11,21 +11,26 @@
         <script src="kendo/js/jquery.min.js"></script>
         <script src="kendo/js/kendo.all.min.js"></script>
         <script src="scripts/libs/rsvp.min.js"></script>
+        
+        <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
+        <script src="scripts/app/TempData.js"></script>
+        
         <script src="scripts/app/http-request.js"></script>
         <script src="scripts/app/extensions.js"></script>
         <script src="scripts/app/parking.js"></script>
         <script src="scripts/app/current.js"></script>
         <script src="scripts/app.js"></script>
         
-        <script type="text/javascript"
-  src="https://maps.googleapis.com/maps/api/js?libraries=geometry,places&sensor=true">
-</script>
         
         
     
     </head>
     
     <style>
+        .km-content.km-widget.km-scroll-wrapper{
+            /*background-color: rgba(99,0,99,0.66);*/
+            background-color: black;
+        }
         #map-canvas {
             display: block;
             width:400px;
@@ -51,6 +56,40 @@
             margin: -60px 0 0 -10px;
         }
         
+        .Blue {
+            background: rgba(0,191,255,0.8);
+            border: 2px solid darkblue;
+            color: darkblue;
+        }
+        .Green {
+            background: rgba(0,255,127,0.8);
+            border: 2px solid darkgreen;
+            color: darkgreen;
+            
+        }
+        .None {
+            background: rgba(220,220,220,0.8);
+            border: 2px solid white;
+            color: white;
+            
+        }
+        #current-point, #parking-point{
+            margin:5px 10px;
+            padding:5px;
+        }
+        .Blue .ZoneInfo{
+            color: blue;
+        }
+        .Green .ZoneInfo{
+            color: green;
+        }
+        .None .ZoneInfo{
+            color: purple;
+        }
+        
+        .ZoneInfo{
+            background: rgba(255, 255, 255, 0.5);
+        }
         /*#parking-image{
             width: 200px;
             height: 200px;
@@ -70,23 +109,37 @@
         <div id="home-view" data-id="home-view" data-role="view"
              data-layout="main-layout" data-title="Home" data-show="app.current.init">
             <div id="displayPositionWrapper">
-                <!--<img id="map-canvas" src="#" alt="map canvas"  /><div id="arrow"></div>-->
-            <img id="map-canvas" src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false"/>
-                <div id="arrow"></div>
-                
+                <img id="map-canvas" src="#" alt="map canvas"  /><div id="arrow"></div>
             </div>
             
 	
-            
-            <div id="current-point">
+            <div id="current-point" data-bind="attr: { class: currentZone},events: { click: handleOptionsButton}">
+                
+                <span>Current Point: </span>
+                <div class="ZoneInfo">
+                    <span>Parking Zone: </span>
+                    <span data-bind="text: currentZone"  data-align="center"></span>
+                </div>
+                <div>
+                    <span>Address: </span>
+                    <span data-bind="text: currentAddress"  data-align="center"></span>
+                </div>
                 <div data-bind="source: currentPoint"  data-template="currentPoint-template" data-align="center"></div>
-                <span>CurrentInfo</span>    
-                <span data-bind="text: currentAddress"  data-align="center"></span>
+                
+                
             </div>
-            <div id="parking-point">
+            <div id="parking-point" data-bind="attr: { class: parkingZone},events: { click: handleOptionsButton}">
+                
+                <span>Parking Point: </span>
+                <div class="ZoneInfo">
+                    <span>Parking Zone: </span>
+                    <span data-bind="text: parkingZone"  data-align="center"></span>
+                </div>
+                <div>
+                    <span>Address: </span>
+                    <span data-bind="text: parkingAddress"  data-align="center"></span>
+                </div>
                 <div data-bind="source: parkingPoint"  data-template="parkingPoint-template" data-align="center"></div>
-                <span>ParkingInfo</span>    
-                <span data-bind="text: parkingAddress"  data-align="center"></span>
             </div>
         </div>
         
@@ -152,13 +205,13 @@
         
         <script id="parkingPoint-template" type="text/x-kendo-template">
             <div>
-                <span>located at: (#:coords.latitude#,#:coords.longitude#)</span>
+                <span>Coordinates: (#:coords.latitude#,#:coords.longitude#)</span>
             </div>
         </script>
 
         <script id="currentPoint-template" type="text/x-kendo-template">
             <div>
-                <span>located at: (#:coords.latitude#,#:coords.longitude#)</span>
+                <span>Coordinates: (#:coords.latitude#,#:coords.longitude#)</span>
             </div>
         </script>
         

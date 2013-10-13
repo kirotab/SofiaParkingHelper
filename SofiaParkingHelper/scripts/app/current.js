@@ -1,7 +1,55 @@
 var app = app || {};
+var blueZonePolygon = blueZonePolygon || new google.maps.Polygon({ paths: blueZoneArray });
+var greenZonePolygon = greenZonePolygon || new google.maps.Polygon({ paths: greenZoneArray });
+
 var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
 (function(a) {
-   
+    
+    
+    //console.log(blueZoneArray);
+//rightShoulderFront.setMap(map);
+    function handleCenterCurrentPoint(ev){
+        viewModel.isCentered = true;
+        return;
+    }
+    function handleCenterParkingPoint(ev){
+        viewModel.isCentered = false;
+        return;
+    }
+     
+    function setZone(zoneName, zoneProp){
+        
+        if (cordovaExt.isWithinPoly(zoneProp,blueZonePolygon)){
+                viewModel.set(zoneName,"Blue");
+            }
+        else if (cordovaExt.isWithinPoly(zoneProp,greenZonePolygon)){
+                viewModel.set(zoneName,"Green");
+            }
+        else {
+            console.log("Zone None");
+            viewModel.set(zoneName,"None");
+        }
+    }
+    function getColorFromZone(zoneName){
+        if (zoneName == "Blue"){
+            console.log("color Blue");
+            console.log(zoneName);
+            
+            return "blue";
+        }
+        else if (zoneName == "Green"){
+            console.log("color Green");
+            console.log(zoneName);
+            return "green";
+        }
+        else {
+            console.log("color Red");
+            console.log(zoneName);
+            
+            return "red";
+        }
+    }
+    
     function startWatchingGeolocation() {
         navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
             enableHighAccuracy: true,
@@ -15,65 +63,78 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         var latPark = viewModel.parkingPoint.coords.latitude
         var longPark = viewModel.parkingPoint.coords.longitude;
         var heading = position.coords.heading;
+        
+        viewModel.set("currentPoint", position);
+        setZone("currentZone",viewModel.currentPoint);
+        
+       
+       var zoomParam = "";
+        if(viewModel.isCentered || !viewModel.hasParkedValue){
+            zoomParam = "&zoom=14"
+        }
 
         var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
-        var centerPar = "center=" + lat + "," + long;
+        var centerPar = "";
+        if((lat != 0 && long != 0) && (viewModel.isCentered || !viewModel.hasParkedValue)){
+            centerPar = "center=" + lat + "," + long +"&";
+        }
         var sizePar = "size=400x400";
         var markersPar =""; 
-        /*if (lat != 0 && long != 0){
+        if (lat != 0 && long != 0){
+            var curColor = getColorFromZone(viewModel.currentZone);
+            
+            
             //markersPar+= "&markers=icon:"+defaultArrowUrl+"|"+ lat + "," + long;
-            markersPar+= "&markers=color%3apurple|label%3aC|"+ lat + "," + long;
-        }*/
+            markersPar+= "&markers=color%3a" + curColor + "|label%3aC|"+ lat + "," + long;
+        }
         if (latPark != 0 && longPark != 0){
-            markersPar+= "&markers=color%3ablue|label%3aP|"+ latPark + "," + longPark;
+            var parkColor = getColorFromZone(viewModel.parkingZone);
+            
+            markersPar+= "&markers=color%3a" + parkColor + "|label%3aP|"+ latPark + "," + longPark;
         }
         //var pathPar = "&path=color%3a0x0000ff|weight%3a5|"+lat+","+long+"|"+latPark+","+longPark;
+        var pathPar = "";
         if ((lat != 0 && long != 0) && (latPark != 0 && longPark != 0)){
-            var pathPar = "&path=color%3a0x0000ff|weight%3a4|"+lat+","+long+"|"+latPark+","+longPark;
+            pathPar = "&path=color%3a0xff002299|weight%3a4|"+lat+","+long+"|"+latPark+","+longPark;
         }
-        //if(lat != 0 && long != 0)
-           // centerPar = "";
-        
-        
-        //var pathParArea = "&path=color:0xFFFFFF00|weight:5|fillcolor:0xAA000033|" + "42.696804,23.320820|" + "42.697435,23.316786|" + "42.695826,23.321078";
-        var pathParAreaBlue = "&path=color:0xFFFFFF00|weight:5|fillcolor:0x0000AA70" + blueZone;
-        //var pathParAreaGreen = "&path=color:0xFFFFFF00|weight:5|fillcolor:0x00AA0070" + greenZone;
         
         /*var pathParAreaGreenEncoded = google.maps.geometry.encoding.encodePath(greenZoneArray);
         console.log(pathParAreaGreenEncoded);*/
         
-        //"imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClxAk@bFud@|@{Kg@{BuEg_AvIkB|Gf@jNfCbDlAbY`_@pAxAvIxk@ApCu@~MoSvXw]oF_MUcECsE_A_@QmxAj@"
-        var pathParAreaGreenEncoded =
-        "&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:"+
-        "imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX";
+        var pathParAreaBlueEncoded =
+        "&path=fillcolor:0x0000AA40%7Ccolor:0x0000FF66%7Cenc:" +
+        "asrcGazhmCbFud@|@{Kg@{BuEg_AvIkB|Gf@jNfCbDlAbY`_@pAxAvIxk@ApCu@~MoSvXw]oF_MUcECsE_A";
         
+        var pathParAreaGreenEncoded =
+        "&path=fillcolor:0x00AA0040%7Ccolor:0xFFFFFF00%7Cenc:"+
+        "imucGoyhmCdG}We@mAbJk\\fKbAk@yIbGmA_CyWlBgHfKyC\\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\\_M|LcNpY_Ude@eFjXiA~MpRn\\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX";
         
         
         //var arrow = document.getElementById("arrow");
         var map = document.getElementById("map-canvas");
-        //map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + pathPar+ pathParAreaBlue + markersPar +"&sensor=false&zoom=14";
-        //map.src = mapsBaseUrl + "?" + sizePar + pathParAreaGreenEncoded +"&sensor=false";
-        //map.src = "http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false";
-        //console.log(map.src);
-        /*map.src="http://maps.googleapis.com/maps/api/staticmap?size=400x400&path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7Cenc:imucGoyhmCdG}We@mAbJk\fKbAk@yIbGmA_CyWlBgHfKyC\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\_M|LcNpY_Ude@eFjXiA~MpRn\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX&sensor=false";
-        */
-        map.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
-        //var markersPar = "markers=color%3ablue|label%3aP|" + lat + "," + long + "|" + viewModel.parkingPoint.coords.latitude + "," + viewModel.parkingPoint.coords.longitude;
+        
+        //map.src = mapsBaseUrl + "?" + centerPar + "&" + sizePar + pathPar + pathParAreaBlue + markersPar +"&sensor=false&zoom=14";
+        
+        map.src = mapsBaseUrl + "?" + centerPar + sizePar + pathPar +markersPar+pathParAreaGreenEncoded+ pathParAreaBlueEncoded +"&sensor=false" + zoomParam;
+        
+        //map.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
        
-       
-        //arrow.style.webkitTransform = "rotate(" + (-heading | 0) + "deg)";
-        viewModel.set("currentPoint", position);
+        arrow.style.webkitTransform = "rotate(" + (heading | 0) + "deg)";
+        
+        
+        
+        
         /*if(!viewModel.parkingPoint || (viewModel.parkingPoint.coords.latitude == 0 && viewModel.parkingPoint.coords.longitude == 0)){
                 viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ JSON.stringify(position));
         }*/
+        
         httpRequest.getAddress(position.coords.latitude, position.coords.longitude).then(function(a){
                 //console.log(a);
                 viewModel.set("currentAddress",a)
             });
-        httpRequest.getAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude).then(function(a){
-                //console.log(a);
-                viewModel.set("parkingAddress",a)
-            });
+        
+        
+        
         //console.log(viewModel.parkingAddress);
     }
 
@@ -84,15 +145,25 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     function handleOptionsButton(e){
         console.log(e);
         console.log("handle button options func");
-        if(viewModel.selectedOption == 1){
+        if(viewModel.selectedOption == 10){
             exitApp();
         }
+        //BlueZone
         else if(viewModel.selectedOption == 0){
             toggleBlueZone();
+        }
+        //GreenZone
+        else if(viewModel.selectedOption == 1){
+            toggleGreenZone();
         }
     }
     function toggleBlueZone(){
         console.log("blue zone func");
+        cordovaExt.isWithinPoly(viewModel.currentPoint,blueZonePolygon)
+    }
+    function toggleGreenZone(){
+        console.log("green zone func");
+        cordovaExt.isWithinPoly(viewModel.currentPoint,greenZonePolygon)
     }
     
     function exitApp(){
@@ -116,6 +187,11 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
                 viewModel.set("hasParkedValue", hasParked());
                 viewModel.set("hasParkedValueReverse", !hasParked());
                 viewModel.set("test","views/parking-view.html#parking-view");
+            httpRequest.getAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude).then(function(a){
+                //console.log(a);
+                viewModel.set("parkingAddress",a)
+                setZone("parkingZone",viewModel.parkingPoint);
+            });
         }
         else {
             
@@ -123,7 +199,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     }
     
     function onConfirmExit(buttonIndex) {
-        if (buttonIndex == 1){
+        if (buttonIndex == 10){
             console.log("in exit app func confirm");
             if (navigator.app) {
                 navigator.app.exitApp();
@@ -196,24 +272,36 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         hasParked: hasParked,
         hasParkedValue: true,
         hasParkedValueReverse: true,
-        options:[{"Name":"Blue Zone","Value":"0"},{"Name":"Exit","Value":"1"}],
+        options:[{"Name":"Blue Zone","Value":"0"},{"Name":"Green Zone","Value":"1"},{"Name":"Exit","Value":"10"}],
         selectedOption:"",
         change:onOptionChanged,
         handleOptionsButton: handleOptionsButton,
-        isMainPage: true
+        isMainPage: true,
+        parkingZone: "",
+        currentZone: "",
+        isCentered = true,
+        handleCenterCurrentPoint: handleCenterCurrentPoint,
+        handleCenterParkingPoint: handleCenterParkingPoint
     });
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
+    
     function init(e) {
         if (localStorage.getItem("savedParkingPoint") != undefined) {
-			    var storedPoint = localStorage.getItem("savedParkingPoint");
-                viewModel.set("parkingPoint", JSON.parse(storedPoint));
-                viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ storedPoint);
-            }
-            else {
-                viewModel.set("parkingPoint", {"coords":{"latitude":0,"longitude":0}});
-            }
-            viewModel.set("hasParkedValue", hasParked());
-            viewModel.set("hasParkedValueReverse", !hasParked());
+		    var storedPoint = localStorage.getItem("savedParkingPoint");
+            viewModel.set("parkingPoint", JSON.parse(storedPoint));
+            viewModel.set("test","views/parking-view.html#parking-view?ppoint="+ storedPoint);
+        }
+        else {
+            viewModel.set("parkingPoint", {"coords":{"latitude":0,"longitude":0}});
+        }
+        viewModel.set("hasParkedValue", hasParked());
+        viewModel.set("hasParkedValueReverse", !hasParked());
+        httpRequest.getAddress(viewModel.parkingPoint.coords.latitude, viewModel.parkingPoint.coords.longitude).then(function(a){
+            //console.log(a);
+            viewModel.set("parkingAddress",a)
+        });
+        
+        setZone("parkingZone",viewModel.parkingPoint);
 
         //viewModel.set("options",);
         startWatchingGeolocation();
@@ -224,27 +312,6 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     a.current = {
         init:init          
     };
-    
-    var blueZone =
-"|42.698886,23.315689"+
-"|42.69775,23.321718"+
-"|42.697435,23.323778"+
-"|42.69764,23.3244"+
-"|42.698712,23.334679"+
-"|42.696993,23.335215"+
-"|42.695558,23.335022"+
-"|42.693098,23.334335"+
-"|42.692278,23.333949"+
-"|42.688098,23.328821"+
-"|42.687688,23.32837"+
-"|42.685969,23.321203"+
-"|42.685984,23.320474"+
-"|42.686253,23.31807"+
-"|42.689533,23.313951"+
-"|42.694454,23.315152"+
-"|42.696693,23.315259"+
-"|42.697671,23.315281"+
-"|42.698728,23.315603";
     
 }(app));
 

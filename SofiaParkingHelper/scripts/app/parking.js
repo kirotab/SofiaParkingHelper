@@ -72,7 +72,7 @@ var defaultImgUrl = defaultImgUrl || 'styles/img/default-picture.png';
             'Are you sure ?',    // message
              onConfirm,          // callback to invoke with index of button pressed
             'Unpark',            // title
-            'Yes,No'             // buttonLabels
+            ['Yes','No']              // buttonLabels
         );
     }
     
