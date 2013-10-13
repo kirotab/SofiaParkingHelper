@@ -1,6 +1,8 @@
 var app = app || {};
 var blueZonePolygon = blueZonePolygon || new google.maps.Polygon({ paths: blueZoneArray });
 var greenZonePolygon = greenZonePolygon || new google.maps.Polygon({ paths: greenZoneArray });
+var defaultZoomLevel = 13;
+var watchID = watchID || {};
 
 var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
 (function(a) {
@@ -8,6 +10,23 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     
     //console.log(blueZoneArray);
 //rightShoulderFront.setMap(map);
+    function handleZoomIn(ev){
+        var zoomLvl = viewModel.currentZoomLevel;
+        if(zoomLvl < 16){
+            zoomLvl++;
+            viewModel.set("currentZoomLevel",zoomLvl);
+        }
+        console.log(viewModel.currentZoomLevel)
+    }
+    function handleZoomOut(ev){
+        var zoomLvl = viewModel.currentZoomLevel;
+        if(zoomLvl > 1){
+            zoomLvl--;
+            viewModel.set("currentZoomLevel",zoomLvl);
+        }
+        console.log(viewModel.currentZoomLevel);
+    }
+    
     function handleCenterCurrentPoint(ev){
         viewModel.isCentered = true;
         return;
@@ -49,11 +68,14 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
             return "red";
         }
     }
+    function stopWatchingGeolocation() {
+        navigator.geolocation.clearWatch(watchID);
+    }
     
     function startWatchingGeolocation() {
-        navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
+            watchID = navigator.geolocation.watchPosition(geoWatchSuccess, geoWatchError, {
             enableHighAccuracy: true,
-            maximumAge: 50
+            maximumAge: 500
         });
     }
     
@@ -70,7 +92,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
        
        var zoomParam = "";
         if(viewModel.isCentered || !viewModel.hasParkedValue){
-            zoomParam = "&zoom=14"
+            zoomParam = "&zoom="+viewModel.currentZoomLevel;
         }
 
         var mapsBaseUrl = "http://maps.googleapis.com/maps/api/staticmap";
@@ -78,7 +100,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         if((lat != 0 && long != 0) && (viewModel.isCentered || !viewModel.hasParkedValue)){
             centerPar = "center=" + lat + "," + long +"&";
         }
-        var sizePar = "size=400x400";
+        var sizePar = "size=300x300";
         var markersPar =""; 
         if (lat != 0 && long != 0){
             var curColor = getColorFromZone(viewModel.currentZone);
@@ -155,6 +177,9 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         //GreenZone
         else if(viewModel.selectedOption == 1){
             toggleGreenZone();
+        }
+        else if (viewModel.selectedOption == 9){
+            stopWatchingGeolocation();
         }
     }
     function toggleBlueZone(){
@@ -272,16 +297,24 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         hasParked: hasParked,
         hasParkedValue: true,
         hasParkedValueReverse: true,
-        options:[{"Name":"Blue Zone","Value":"0"},{"Name":"Green Zone","Value":"1"},{"Name":"Exit","Value":"10"}],
+        options:[
+        {"Name":"Blue Zone","Value":"0"},
+        {"Name":"Green Zone","Value":"1"},
+        {"Name":"Stop GeoWatch","Value":"9"},
+        {"Name":"Exit","Value":"10"}],
         selectedOption:"",
         change:onOptionChanged,
         handleOptionsButton: handleOptionsButton,
         isMainPage: true,
         parkingZone: "",
         currentZone: "",
-        isCentered = true,
+        isCentered: true,
         handleCenterCurrentPoint: handleCenterCurrentPoint,
-        handleCenterParkingPoint: handleCenterParkingPoint
+        handleCenterParkingPoint: handleCenterParkingPoint,
+        currentZoomLevel: defaultZoomLevel,
+        handleZoomIn:handleZoomIn,
+        handleZoomOut:handleZoomOut
+        
     });
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
     

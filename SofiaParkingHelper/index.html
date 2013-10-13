@@ -33,9 +33,12 @@
         }
         #map-canvas {
             display: block;
-            width:400px;
+            width:300px;
+            height:300px;
+            margin: 0;
+            /*width:400px;
             height:400px;
-            margin: -50px -50px -50px -50px;
+            margin: -50px -50px -50px -50px;*/
         }
         #displayPositionWrapper {
             margin:0 auto;
@@ -46,6 +49,18 @@
         }
         
         #arrow{
+            position: absolute;
+            width:40px;
+            height: 50px;
+            background-size: 40px 50px;
+            background-image: url('styles/img/direction-arrow.png');
+            top: 10px;
+            right:20px;
+           /* margin: -10px 0 0 -10px;*/
+            /*margin: -60px 0 0 -10px;*/
+        }
+        
+        #arrow.centered{
             position: relative;
             width: 20px;
             height: 20px;
@@ -53,29 +68,38 @@
             background-image: url('styles/img/direction-arrow.png');
             top: -50%;
             left: 50%;
-            margin: -60px 0 0 -10px;
+            margin: -10px 0 0 -10px;
+            /*margin: -60px 0 0 -10px;*/
         }
+        
         
         .Blue {
             background: rgba(0,191,255,0.8);
-            border: 2px solid darkblue;
+            border: 3px solid darkblue;
             color: darkblue;
         }
         .Green {
             background: rgba(0,255,127,0.8);
-            border: 2px solid darkgreen;
+            border: 3px solid darkgreen;
             color: darkgreen;
             
         }
         .None {
             background: rgba(220,220,220,0.8);
-            border: 2px solid white;
+            border: 3px solid white;
             color: white;
             
         }
         #current-point, #parking-point{
             margin:5px 10px;
             padding:5px;
+            border-radius:5px;
+        }
+        #current-point:hover, #parking-point:hover{
+            border:3px solid deepskyblue;
+        }
+        #current-point:active, #parking-point:active{
+            border:3px solid yellow;
         }
         .Blue .ZoneInfo{
             color: blue;
@@ -89,6 +113,20 @@
         
         .ZoneInfo{
             background: rgba(255, 255, 255, 0.5);
+        }
+        
+        #mapZoomer{
+            position: absolute;
+            width:20px;
+            height: 50px;
+            
+            top: 10px;
+            left:10px;
+        }
+        #mapZoomer a{
+            width:15px;
+            height: 15px;
+            margin:5px 5px;
         }
         /*#parking-image{
             width: 200px;
@@ -111,9 +149,12 @@
             <div id="displayPositionWrapper">
                 <img id="map-canvas" src="#" alt="map canvas"  /><div id="arrow"></div>
             </div>
-            
-	
-            <div id="current-point" data-bind="attr: { class: currentZone},events: { click: handleOptionsButton}">
+            <div id="mapZoomer">
+                <a data-role="button" data-bind="events: {click: handleZoomIn}, visible: isCentered" data-icon="add"></a>
+                <a data-role="button" data-bind="events: {click: handleZoomOut}, visible: isCentered" data-icon="reply"></a>
+            </div>
+	        
+            <div id="current-point" data-bind="attr: { class: currentZone},events: { click: handleCenterCurrentPoint}">
                 
                 <span>Current Point: </span>
                 <div class="ZoneInfo">
@@ -128,7 +169,7 @@
                 
                 
             </div>
-            <div id="parking-point" data-bind="attr: { class: parkingZone},events: { click: handleOptionsButton}">
+            <div id="parking-point" data-bind="attr: { class: parkingZone},events: { click: handleCenterParkingPoint}">
                 
                 <span>Parking Point: </span>
                 <div class="ZoneInfo">
