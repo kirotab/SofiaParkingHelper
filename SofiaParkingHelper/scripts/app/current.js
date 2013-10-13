@@ -70,7 +70,7 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         }
     }
     function stopWatchingGeolocation() {
-        console.log(watchID);
+        console.log("in stop watch"+watchID);
         navigator.geolocation.clearWatch(watchID);
     }
     
@@ -128,14 +128,18 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         /*var pathParAreaGreenEncoded = google.maps.geometry.encoding.encodePath(greenZoneArray);
         console.log(pathParAreaGreenEncoded);*/
         
-        var pathParAreaBlueEncoded =
-        "&path=fillcolor:0x0000AA40%7Ccolor:0x0000FF66%7Cenc:" +
-        "asrcGazhmCbFud@|@{Kg@{BuEg_AvIkB|Gf@jNfCbDlAbY`_@pAxAvIxk@ApCu@~MoSvXw]oF_MUcECsE_A";
-        
-        var pathParAreaGreenEncoded =
-        "&path=fillcolor:0x00AA0040%7Ccolor:0xFFFFFF00%7Cenc:"+
-        "imucGoyhmCdG}We@mAbJk\\fKbAk@yIbGmA_CyWlBgHfKyC\\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\\_M|LcNpY_Ude@eFjXiA~MpRn\\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX";
-        
+        var pathParAreaBlueEncoded = "";
+        if(viewModel.showBlueZone){
+            pathParAreaBlueEncoded =
+            "&path=fillcolor:0x0000AA40%7Ccolor:0x0000FF66%7Cenc:" +
+            "asrcGazhmCbFud@|@{Kg@{BuEg_AvIkB|Gf@jNfCbDlAbY`_@pAxAvIxk@ApCu@~MoSvXw]oF_MUcECsE_A";
+        }
+        var pathParAreaGreenEncoded = "";
+        if(viewModel.showGreenZone){
+            pathParAreaGreenEncoded =
+            "&path=fillcolor:0x00AA0040%7Ccolor:0xFFFFFF00%7Cenc:"+
+            "imucGoyhmCdG}We@mAbJk\\fKbAk@yIbGmA_CyWlBgHfKyC\\kBzAmAfPg`@dMua@rBwPhRf@QuDyCk^j@WxCr^HvD~MjBlInOpFta@n@?hDoYhCoKlRwa@pQm]tKeKJ\\_M|LcNpY_Ude@eFjXiA~MpRn\\tFlJ|@nD~ToD?`@eTbDlQdy@lB|Hv@bJw@bHgD`FnVnXzAz@xW|HKz@gYwIqLiMTpV`Iv_@p@jF}E~@yLmy@yGcMmLxNqWb^uKuTgCMoLnFaUwDk[aGoNkDqi@oQiDkClyAYrE~@bEB~LTv]nFnSwXt@_N@qCwIyk@qAyAcYa_@cDmAkNgC}Gg@wIjBtEf_Af@zB}@zKcFtd@^PmyAX";
+        }
         
         //var arrow = document.getElementById("arrow");
         var map = document.getElementById("map-canvas");
@@ -193,13 +197,13 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         }
     }
     function toggleBlueZone(){
-        //console.log("blue zone func");
+        console.log("blue zone func");
         //cordovaExt.isWithinPoly(viewModel.currentPoint,blueZonePolygon);
         var show = viewModel.showBlueZone;
-        viewModel.set("showGreenZone",!show);
+        viewModel.set("showBlueZone",!show);
     }
     function toggleGreenZone(){
-        //console.log("green zone func");
+        console.log("green zone func");
         //cordovaExt.isWithinPoly(viewModel.currentPoint,greenZonePolygon);
         var show = viewModel.showGreenZone;
         viewModel.set("showGreenZone",!show);
@@ -266,22 +270,6 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
         );
     }
     
-    function onPrompt(results) {
-        alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
-    }
-
-    // Show a custom prompt dialog
-    //
-    function showPrompt() {
-        navigator.notification.prompt(
-            'Please enter your name',  // message
-            onPrompt,                  // callback to invoke
-            'Registration',            // title
-            ['Ok','Exit'],             // buttonLabels
-            'Jane Doe'                 // defaultText
-        );
-    }
-    
     function hasParked(){
         if (!viewModel.parkingPoint ||
             (viewModel.parkingPoint.coords.latitude == 0 && viewModel.parkingPoint.coords.longitude == 0)){
@@ -296,7 +284,8 @@ var defaultArrowUrl = "url('styles/img/direction-arrow.png')";
     function onOptionChanged(e) {
         console.log(e.sender._selectedValue);
           
-        viewModel.set("selectedOption", e.sender._selectedValWatch    }
+        viewModel.set("selectedOption", e.sender._selectedValWatch);
+    }
         
     //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL // //VIEW MODEL //
     var viewModel = kendo.observable({
